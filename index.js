@@ -356,8 +356,14 @@ async function transcribe(buffer) {
   } else if (SPEECH_METHOD === 'vosk') {
       vosk._rec_.acceptWaveform(buffer);
       let ret = vosk._rec_.result().text;
-      console.log('vosk:', ret)
-      return ret;
+      if (ret.toLowerCase().includes('alexa')) {
+          ret = ret.toLowerCase().replace('alexa ');
+          ret = '!' + ret;
+          console.log('vosk:', ret)
+          return ret;
+      }
+
+      return null;
   }
 }
 
