@@ -357,7 +357,7 @@ async function transcribe(buffer) {
       vosk._rec_.acceptWaveform(buffer);
       let ret = vosk._rec_.result().text;
       if (ret.toLowerCase().includes('alexa')) {
-          ret = ret.toLowerCase().replace('alexa ');
+          ret = ret.toLowerCase().replace('alexa ', '');
           ret = '!' + ret;
           console.log('vosk:', ret)
           return ret;
