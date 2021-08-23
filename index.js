@@ -340,7 +340,7 @@ function speak_impl(voice_Connection, mapKey) {
 function process_commands_query(txt, mapKey, user) {
     if (txt && txt.length) {
         let val = guildMap.get(mapKey);
-        val.text_Channel.send(user.username + ': ' + txt)
+        val.text_Channel.send(txt)
     }
 }
 
@@ -388,11 +388,24 @@ async function transcribe_witai(buffer) {
         witAI_lastcallTS = Math.floor(new Date());
         console.log(output)
         stream.destroy()
-        if (output && '_text' in output && output._text.length)
-            return output._text
-        if (output && 'text' in output && output.text.length)
+        var textCommand = '';
+        if (output && '_text' in output && output._text.length && output._text.toLowerCase().includes('alexa')) {
+            textCommand = output._text.toLowerCase().replace('alexa ');
+            textCommand = '!' + textCommand;
+            return textCommand;
+        }
+        if (output && 'text' in output && output.text.length && output._text.toLowerCase().includes('alexa')) {
+            textCommand = output.text.toLowerCase().replace('alexa ');
+            textCommand = '!' + textCommand;
             return output.text
-        return output;
+        }
+
+        if (output.toLowerCase().includes('alexa')) {
+            textCommand = output.text.toLowerCase().replace('alexa ');
+            textCommand = '!' + textCommand;
+            return output;
+        }
+        return null;
     } catch (e) { console.log('transcribe_witai 851:' + e); console.log(e) }
 }
 
